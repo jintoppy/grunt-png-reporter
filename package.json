@@ -27,7 +27,9 @@
     "grunt-contrib-nodeunit": "~0.3.0",
     "grunt": "~0.4.2",
     "jshint-stylish": "~0.1.5",
-    "load-grunt-tasks": "~0.3.0"
+    "load-grunt-tasks": "~0.3.0",
+    "underscore": "^1.6.0",
+    "selenium-webdriver": "^2.41.0"
   },
   "scripts": {
     "test": "grunt test"
