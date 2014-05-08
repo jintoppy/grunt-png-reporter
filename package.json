@@ -29,7 +29,8 @@
     "jshint-stylish": "~0.1.5",
     "load-grunt-tasks": "~0.3.0",
     "underscore": "^1.6.0",
-    "selenium-webdriver": "^2.41.0"
+    "selenium-webdriver": "^2.41.0",
+    "protractor": "^0.22.0"
   },
   "scripts": {
     "test": "grunt test"

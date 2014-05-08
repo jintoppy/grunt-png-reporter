@@ -9,9 +9,12 @@
 'use strict';
 
 var _ = require('underscore');
-var REPORTER = require('lib/reporter');
-var util = require('lib/util');
-var VISIBILITY = require('lib/visibility');
+var REPORTER = require('./lib/reporter');
+var util = require('./lib/util');
+var VISIBILITY = require('./lib/visibility');
+var seleniumUtil = require('./lib/seleniumUtil');
+var exec = require('child_process').exec;
+
 
 module.exports = function (grunt) {
 
@@ -75,43 +78,50 @@ function createExpectationObject(jsonObj){
       separator: ', '
     });
 
+  
+    seleniumUtil.openPage('http://www.google.com');
 
-    util.loadJQuery(null,function(){
-      traverseDOM(window.document.body);
-      formattedJson = formattedJson;
-      createExpectationObject(formattedJson[0]);
-      console.log(formattedJson);
-      console.log(expectJsonObj);
-      //REPORTER.generateReport(expectJsonObj);
-  });
+    
 
-
-
-    // Iterate over all specified file groups.
-    this.files.forEach(function (file) {
-      // Concat specified files.
-      var src = file.src.filter(function (filepath) {
-        // Warn on and remove invalid source files (if nonull was set).
-        if (!grunt.file.exists(filepath)) {
-          grunt.log.warn('Source file "' + filepath + '" not found.');
-          return false;
-        } else {
-          return true;
-        }
-      }).map(function (filepath) {
-        // Read file source.
-        return grunt.file.read(filepath);
-      }).join(grunt.util.normalizelf(options.separator));
-
-      // Handle options.
-      src += options.punctuation;
-
-      // Write the destination file.
-      grunt.file.write(file.dest, src);
-
-      // Print a success message.
-      grunt.log.writeln('File "' + file.dest + '" created.');
+    seleniumUtil.getTitle().then(function(title){
+        console.log('title is ' + title);
     });
+    // util.loadJQuery(null,function(){
+    //   traverseDOM('body');
+    //   formattedJson = formattedJson;
+    //   createExpectationObject(formattedJson[0]);
+    //   console.log(formattedJson);
+    //   console.log(expectJsonObj);
+      //REPORTER.generateReport(expectJsonObj);
+  //});
+
+
+
+    // // Iterate over all specified file groups.
+    // this.files.forEach(function (file) {
+    //   // Concat specified files.
+    //   var src = file.src.filter(function (filepath) {
+    //     // Warn on and remove invalid source files (if nonull was set).
+    //     if (!grunt.file.exists(filepath)) {
+    //       grunt.log.warn('Source file "' + filepath + '" not found.');
+    //       return false;
+    //     } else {
+    //       return true;
+    //     }
+    //   }).map(function (filepath) {
+    //     // Read file source.
+    //     return grunt.file.read(filepath);
+    //   }).join(grunt.util.normalizelf(options.separator));
+
+    //   // Handle options.
+    //   src += options.punctuation;
+
+    //   // Write the destination file.
+    //   grunt.file.write(file.dest, src);
+
+    //   // Print a success message.
+    //   grunt.log.writeln('File "' + file.dest + '" created.');
+    // });
   });
 
 };

@@ -1,0 +1,9 @@
+protractor.conf file
+create a new JS file 
+
+parentselector
+origurl
+suturl
+includestyles:true,
+styles: ['background-color','font'],
+styleguide: ''

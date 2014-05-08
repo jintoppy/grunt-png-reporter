@@ -96,4 +96,4 @@ var visibility = (function(){
 
   })();
 
-  exports.module = visibility;
+  module.exports = visibility;

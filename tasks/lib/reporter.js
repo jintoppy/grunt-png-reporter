@@ -1,4 +1,9 @@
 var reporter = (function(){
+	var jQuery;
+	var _ = require('underscore');
+	var setJQuery = function(jQuery){
+		jQuery = jQuery;
+	};
 
 	var createTopFailureLine = function(fromPos, toPos){
 		var div =  jQuery('<div/>');
@@ -86,9 +91,10 @@ var reporter = (function(){
 	};
 
 	return {
-		generateReport: generateReport
+		generateReport: generateReport,
+		setJQuery: setJQuery
 	};
 
 })();
 
-exports.module = reporter;
+module.exports = reporter;

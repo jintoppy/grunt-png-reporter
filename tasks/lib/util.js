@@ -160,4 +160,4 @@ var getNodeData = function(element){
 
 })();
 
-exports.module = util;
+module.exports = util;
