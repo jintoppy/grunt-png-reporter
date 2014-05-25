@@ -12,11 +12,12 @@ var _ = require('underscore');
 var REPORTER = require('./lib/reporter');
 var util = require('./lib/util');
 var VISIBILITY = require('./lib/visibility');
-var seleniumUtil = require('./lib/seleniumUtil');
-var exec = require('child_process').exec;
+//var seleniumUtil = require('./lib/seleniumUtil');
+//var exec = require('child_process').exec;
 var selenium = require('selenium-standalone');
 var webdriverjs = require('webdriverjs');
-
+var fs = require('fs');
+var driverOptions = { desiredCapabilities: { browserName: 'chrome' } };
 
 module.exports = function (grunt) {
 
@@ -82,28 +83,46 @@ var spawnOptions = { stdio: 'pipe' };
 var seleniumArgs = [
   '-debug'
 ];
-var server = selenium(spawnOptions, seleniumArgs);
+
+
 
   grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison test and generate a png report based on that', function () {
 
     // Merge task-specific and/or target-specific options with these defaults.
+    
     var options = this.options({
       punctuation: '.',
       separator: ', '
     });
-
+    console.log('task running');
+    var done = this.async();
+    var server = selenium(spawnOptions, seleniumArgs);
+    var count = 0;
     server.stdout.on('data', function(output) {
+      console.log('coming inside stdout');
         var val = output.toString();
         if(val.indexOf('jetty.jetty.Server')>-1){
-            webdriverjs
-             .remote(options)
-             .init()
-             .url('http://www.google.com')
-             .title(function(err, res) {
-                console.log('Title was: ' + res.value);
-             })
-             .execute(f);
-        }
+            count++;
+            if(count>1){
+                webdriverjs
+               .remote(driverOptions)
+               .init()
+               .url('http://www.google.com')
+               .title(function(err, res) {
+                  console.log('Title was: ' + res.value);
+               })
+               .execute(f)
+               .saveScreenshot('test.png',function(err, png){
+                    if(err){
+                      console.log('Screenshot coult not be saved.')
+                    }
+                })
+               .end();
+               console.log('came till done');
+               done();  
+            }
+            
+      }
 
   });
 

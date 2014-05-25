@@ -7,7 +7,6 @@ var seleniumUtil = (function(){
 			.withCapabilities(webdriver.Capabilities.chrome())
 			.build();
 		driver.manage().timeouts().setScriptTimeout(10000);
-		console.log('came inside createDriver');
 		return driver;
 	}
 
