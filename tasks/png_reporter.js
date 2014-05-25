@@ -14,6 +14,8 @@ var util = require('./lib/util');
 var VISIBILITY = require('./lib/visibility');
 var seleniumUtil = require('./lib/seleniumUtil');
 var exec = require('child_process').exec;
+var selenium = require('selenium-standalone');
+var webdriverjs = require('webdriverjs');
 
 
 module.exports = function (grunt) {
@@ -50,6 +52,10 @@ function traverseDOM(element) {
   }
 }
 
+var f = function(){
+    return document.getElementById('gbqfq').value = 'THIS IS CUSTOM';
+};
+
 var expectJsonObj=[];
 function createExpectationObject(jsonObj){
   var obj, currentObj;
@@ -70,6 +76,14 @@ function createExpectationObject(jsonObj){
 
 }
 
+var spawnOptions = { stdio: 'pipe' };
+
+// options to pass to `java -jar selenium-server-standalone-X.XX.X.jar`
+var seleniumArgs = [
+  '-debug'
+];
+var server = selenium(spawnOptions, seleniumArgs);
+
   grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison test and generate a png report based on that', function () {
 
     // Merge task-specific and/or target-specific options with these defaults.
@@ -78,50 +92,22 @@ function createExpectationObject(jsonObj){
       separator: ', '
     });
 
+    server.stdout.on('data', function(output) {
+        var val = output.toString();
+        if(val.indexOf('jetty.jetty.Server')>-1){
+            webdriverjs
+             .remote(options)
+             .init()
+             .url('http://www.google.com')
+             .title(function(err, res) {
+                console.log('Title was: ' + res.value);
+             })
+             .execute(f);
+        }
+
+  });
+
   
-    seleniumUtil.openPage('http://www.google.com');
-
-    
-
-    seleniumUtil.getTitle().then(function(title){
-        console.log('title is ' + title);
-    });
-    // util.loadJQuery(null,function(){
-    //   traverseDOM('body');
-    //   formattedJson = formattedJson;
-    //   createExpectationObject(formattedJson[0]);
-    //   console.log(formattedJson);
-    //   console.log(expectJsonObj);
-      //REPORTER.generateReport(expectJsonObj);
-  //});
-
-
-
-    // // Iterate over all specified file groups.
-    // this.files.forEach(function (file) {
-    //   // Concat specified files.
-    //   var src = file.src.filter(function (filepath) {
-    //     // Warn on and remove invalid source files (if nonull was set).
-    //     if (!grunt.file.exists(filepath)) {
-    //       grunt.log.warn('Source file "' + filepath + '" not found.');
-    //       return false;
-    //     } else {
-    //       return true;
-    //     }
-    //   }).map(function (filepath) {
-    //     // Read file source.
-    //     return grunt.file.read(filepath);
-    //   }).join(grunt.util.normalizelf(options.separator));
-
-    //   // Handle options.
-    //   src += options.punctuation;
-
-    //   // Write the destination file.
-    //   grunt.file.write(file.dest, src);
-
-    //   // Print a success message.
-    //   grunt.log.writeln('File "' + file.dest + '" created.');
-    // });
   });
 
 };

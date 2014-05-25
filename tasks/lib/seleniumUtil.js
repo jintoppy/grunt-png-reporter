@@ -7,11 +7,12 @@ var seleniumUtil = (function(){
 			.withCapabilities(webdriver.Capabilities.chrome())
 			.build();
 		driver.manage().timeouts().setScriptTimeout(10000);
+		console.log('came inside createDriver');
 		return driver;
 	}
 
 	var driver = createDriver();
-	driver.get("http://www.google.com");
+	//driver.get("http://www.google.com");
 
 	var getWindowObject = function(){
 		driver.executeScript("return window").then(function(window)	{
@@ -30,7 +31,8 @@ var seleniumUtil = (function(){
 	var openPage = function(url){
 		console.log('came inside openPage');
 		console.log(driver.get);
-		driver.get(url);
+		//driver.get(url);
+		driver.get("http://www.google.com");
 	};
 
 	return {
