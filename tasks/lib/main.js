@@ -51,16 +51,22 @@ var main = (function(){
 	}
 
 	  function customScript(){
-		return document.getElmentById('gbqfq').value = "CUSTOM SCRIPT";
-		// return util.loadJQuery(null,function(jQuery){
+
+	  	return util.trial(function(){
+
+	  	});
+	  	 
+		// // return util.loadJQuery(null,function(jQuery){
 		// 	console.log('came inside this');
-		// 	traverseDOM(window.document.body);
-		// 	window.formattedJson = formattedJson;
-		// 	createExpectationObject(formattedJson[0]);
-		// 	console.log(formattedJson);
-		// 	console.log(expectJsonObj);
-		// 	REPORTER.setJQuery(jQuery);
-		// 	REPORTER.generateReport(expectJsonObj);
+
+		// 	document.getElementById('gbqfq').value = "CUSTOM SCRIPT";
+		// 	// traverseDOM(window.document.body);
+		// 	// window.formattedJson = formattedJson;
+		// 	// createExpectationObject(formattedJson[0]);
+		// 	// console.log(formattedJson);
+		// 	// console.log(expectJsonObj);
+		// 	// REPORTER.setJQuery(jQuery);
+		// 	// REPORTER.generateReport(expectJsonObj);
 		// });
 	  }
 

@@ -48,7 +48,7 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
                 webdriverjs
                .remote(driverOptions)
                .init()
-               .url('http://www.google.com')
+               .url('https://www.irctc.co.in/')
                .title(function(err, res) {
                   console.log('Title was: ' + res.value);
                })
@@ -57,8 +57,8 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
                     if(err){
                         console.log('Screenshot coult not be saved.');
                     }
-                })
-               .end();
+                });
+               //.end();
                console.log('came till done');
                done();  
             }

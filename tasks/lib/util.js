@@ -2,34 +2,40 @@ var util = (function(){
 
 	var _ = require('underscore');
 
+	var trial = function(callback){
+		callback();
+	};
+
 	var loadJQuery = function(url, callback){
-		if(window.jQuery){
-			callback(window.jQuery);
-		}
-		else{
-			if(!url){
-			url = "https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js";
-			}
+		console.log('came till here');
+		callback();
+		// if(window.jQuery){
+		// 	callback(window.jQuery);
+		// }
+		// else{
+		// 	if(!url){
+		// 		url = "https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js";
+		// 	}
 
-			var script = document.createElement("script");
-			script.type = "text/javascript";
+		// 	var script = document.createElement("script");
+		// 	script.type = "text/javascript";
 
-			if (script.readyState) { //IE
-			script.onreadystatechange = function () {
-				if (script.readyState == "loaded" || script.readyState == "complete") {
-					script.onreadystatechange = null;
-					callback(window.jQuery);
-				}
-			};
-			} else { //Others
-				script.onload = function () {
-					callback(window.jQuery);
-				};
-			}
+		// 	if (script.readyState) { //IE
+		// 	script.onreadystatechange = function () {
+		// 		if (script.readyState == "loaded" || script.readyState == "complete") {
+		// 			script.onreadystatechange = null;
+		// 			callback(window.jQuery);
+		// 		}
+		// 	};
+		// 	} else { //Others
+		// 		script.onload = function () {
+		// 			callback(window.jQuery);
+		// 		};
+		// 	}
 
-			script.src = url;
-			document.getElementsByTagName("head")[0].appendChild(script);
-		}
+		// 	script.src = url;
+		// 	document.getElementsByTagName("head")[0].appendChild(script);
+		// }
 		
 
 	};
@@ -157,7 +163,8 @@ var getNodeData = function(element){
 		getPosition: getPosition,
 		isValidElement: isValidElement,
 		getSelector: getSelector,
-		getNodeData: getNodeData
+		getNodeData: getNodeData,
+		trial: trial
 	};
 
 })();
