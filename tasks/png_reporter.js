@@ -42,6 +42,7 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
       console.log('coming inside stdout');
         var val = output.toString();
         if(val.indexOf('jetty.jetty.Server')>-1){
+            console.log(main.customScript);
             count++;
             if(count>1){
                 webdriverjs

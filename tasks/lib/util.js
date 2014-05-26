@@ -1,5 +1,7 @@
 var util = (function(){
 
+	var _ = require('underscore');
+
 	var loadJQuery = function(url, callback){
 		if(window.jQuery){
 			callback(window.jQuery);
@@ -69,7 +71,7 @@ var util = (function(){
 
 };
 
-var _getStyle = function(el, property) {
+var getStyle = function(el, property) {
       if ( window.getComputedStyle ) {
         return document.defaultView.getComputedStyle(el,null)[property];
       }

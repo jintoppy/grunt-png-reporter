@@ -1,6 +1,7 @@
 var reporter = (function(){
 	var jQuery;
 	var _ = require('underscore');
+	var util = require('./util');
 	var setJQuery = function(jQuery){
 		jQuery = jQuery;
 	};
@@ -64,7 +65,7 @@ var reporter = (function(){
 					var nodeToBeComparedForTop = jQuery(key);
 					if(nodeToBeComparedForTop.length>0){
 						var posToBeCompared = util.getPosition(nodeToBeComparedForTop[0]);
-						if(Math.abs(currObjPos.y-posToBeCompared.y) != value){
+						if(Math.abs(currObjPos.y-posToBeCompared.y) !== value){
 							totalFailures++;
 							createTopFailureLine(currObjPos, posToBeCompared);
 						}
@@ -75,14 +76,14 @@ var reporter = (function(){
 					var nodeToBeComparedForLeft = jQuery(key);
 					if(nodeToBeComparedForLeft.length>0){
 						var posToBeCompared = util.getPosition(nodeToBeComparedForLeft[0]);
-						if(Math.abs(currObjPos.x-posToBeCompared.x) != value){
+						if(Math.abs(currObjPos.x-posToBeCompared.x) !== value){
 							totalFailures++;
 							createLeftFailureLine(currObjPos, posToBeCompared);
 						}
 					}
 				});
 
-				if(totalFailures == 0){
+				if(totalFailures === 0){
 					createSuccessMsg();
 				}
 			}
