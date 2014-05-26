@@ -8,10 +8,7 @@
 
 'use strict';
 
-var _ = require('underscore');
-var REPORTER = require('./lib/reporter');
-var util = require('./lib/util');
-var VISIBILITY = require('./lib/visibility');
+var main = require('./lib/main');
 //var seleniumUtil = require('./lib/seleniumUtil');
 //var exec = require('child_process').exec;
 var selenium = require('selenium-standalone');
@@ -21,62 +18,6 @@ var driverOptions = { desiredCapabilities: { browserName: 'chrome' } };
 
 module.exports = function (grunt) {
 
-  // Please see the Grunt documentation for more information regarding task
-  // creation: http://gruntjs.com/creating-tasks
-
-
-var formattedJson = [];
-
-function traverseDOM(element) {
-    var nodeData, parentNode, elementNodeData;
-    
-    
-    if(util.isValidElement(element)){
-    elementNodeData = util.getNodeData(element);
-    if (element.tagName === "BODY") {
-      formattedJson.push(elementNodeData);
-    }
-    var parentData = util.findDeep(formattedJson, elementNodeData);
-    if(VISIBILITY.isVisible(element) && element.hasChildNodes() && parentData){
-      for (var i = 0; i < element.childNodes.length; i++) {
-        var node = element.childNodes[i];
-        if (util.isValidElement(node)) {
-          nodeData = util.getNodeData(node);
-          if (!parentData.childNodes) {
-            parentData.childNodes = [];
-          }
-          parentData.childNodes.push(nodeData);
-          traverseDOM(node);
-        }
-      }
-    }
-  }
-}
-
-var f = function(){
-    return document.getElementById('gbqfq').value = 'THIS IS CUSTOM';
-};
-
-var expectJsonObj=[];
-function createExpectationObject(jsonObj){
-  var obj, currentObj;
-  if(jsonObj && jsonObj.childNodes && jsonObj.childNodes.length>0){
-      obj={};
-      obj["selector"] = jsonObj.selector;
-      obj.top={};
-      obj.left={};
-      expectJsonObj.push(obj);
-    for(var i=0;i<jsonObj.childNodes.length;i++){
-      currentObj = jsonObj.childNodes[i];
-      obj.top[currentObj.selector] = Math.abs(currentObj.y-jsonObj.y);
-      obj.left[currentObj.selector] = Math.abs(currentObj.x-jsonObj.x);
-      createExpectationObject(currentObj);
-    }
-    
-  }
-
-}
-
 var spawnOptions = { stdio: 'pipe' };
 
 // options to pass to `java -jar selenium-server-standalone-X.XX.X.jar`
@@ -85,8 +26,7 @@ var seleniumArgs = [
 ];
 
 
-
-  grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison test and generate a png report based on that', function () {
+grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison test and generate a png report based on that', function () {
 
     // Merge task-specific and/or target-specific options with these defaults.
     
@@ -111,10 +51,10 @@ var seleniumArgs = [
                .title(function(err, res) {
                   console.log('Title was: ' + res.value);
                })
-               .execute(f)
+               .execute(main.customScript)
                .saveScreenshot('test.png',function(err, png){
                     if(err){
-                      console.log('Screenshot coult not be saved.')
+                        console.log('Screenshot coult not be saved.');
                     }
                 })
                .end();

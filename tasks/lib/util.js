@@ -1,8 +1,8 @@
 var util = (function(){
 
 	var loadJQuery = function(url, callback){
-		if(window.jquery){
-			callback();
+		if(window.jQuery){
+			callback(window.jQuery);
 		}
 		else{
 			if(!url){
@@ -16,12 +16,12 @@ var util = (function(){
 			script.onreadystatechange = function () {
 				if (script.readyState == "loaded" || script.readyState == "complete") {
 					script.onreadystatechange = null;
-					callback();
+					callback(window.jQuery);
 				}
 			};
 			} else { //Others
 				script.onload = function () {
-					callback();
+					callback(window.jQuery);
 				};
 			}
 

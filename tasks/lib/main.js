@@ -1,5 +1,9 @@
-(function(window,util,undefined){
+var main = (function(){
 var formattedJson = [];
+var _ = require('underscore');
+var REPORTER = require('./reporter');
+var util = require('./util');
+var VISIBILITY = require('./visibility');
 
 function traverseDOM(element) {
     var nodeData, parentNode, elementNodeData;
@@ -47,13 +51,22 @@ function createExpectationObject(jsonObj){
 
 }
 
-util.loadJQuery(null,function(){
-	traverseDOM(window.document.body);
-	window.formattedJson = formattedJson;
-	createExpectationObject(formattedJson[0]);
-	console.log(formattedJson);
-	console.log(expectJsonObj);
-	REPORTER.generateReport(expectJsonObj);
-});
+  function customScript(){
+	return util.loadJQuery(null,function(jQuery){
+		console.log('came inside this');
+		traverseDOM(window.document.body);
+		window.formattedJson = formattedJson;
+		createExpectationObject(formattedJson[0]);
+		console.log(formattedJson);
+		console.log(expectJsonObj);
+		REPORTER.setJQuery(jQuery);
+		REPORTER.generateReport(expectJsonObj);
+	});
+  }
 
-})(window,util);
+  return {
+	customScript: customScript
+  };
+
+})();
+module.exports = main;
