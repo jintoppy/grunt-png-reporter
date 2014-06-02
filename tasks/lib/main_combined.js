@@ -1,6 +1,6 @@
 var main = (function(){
 
-	function generateExpectation(expectationObjectParam){
+	function generateExpectation(){
 	var formattedJson = [];
 
 	//files will be inserted here
@@ -330,22 +330,12 @@ var getNodeData = function(element){
 	}
 
 	  
-		var executingCompleted = false;
-	  	 
-		util.loadJQuery(null,function(jQuery){
-				traverseDOM(window.document.body);
-				window.formattedJson = formattedJson;
-				createExpectationObject(formattedJson[0]);
-				executingCompleted = true;
-				//console.log(expectationObjectParam);
-				//return expectationObjectParam;
-		});
-
-		do{
-			console.log('waiting');
-		}while(!executingCompleted);
-
+		 
+		traverseDOM(window.document.body);
+		window.formattedJson = formattedJson;
+		createExpectationObject(formattedJson[0]);
 		return expectJsonObj;
+		
 	  }
 
 	  return {

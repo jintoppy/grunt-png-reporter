@@ -41,6 +41,7 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
     var reporterRegex = new RegExp('{{REPORTER}}');
     var visibilityRegex = new RegExp('{{VISIBILITY}}');
     var underscoreRegex = new RegExp('{{UNDERSCORE}}');
+    var expectationObjectRegex = new RegExp('{{EXPECTATION_OBJECT}}');
 
     //Common 
     var underscoreContent = grunt.file.read('node_modules/underscore/underscore-min.js');
@@ -59,14 +60,30 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
     var reporterContent = grunt.file.read('tasks/lib/reporter.js');
     reporterContent = reporterContent.replace(utilRegex,utilContent);
     reporterContent = reporterContent.replace(underscoreRegex,underscoreContent);
-    grunt.file.write('tasks/lib/reporter_combined.js',reporterContent);
-    var reporter_combined = require('./lib/reporter_combined.js');
+    
     
     var done = this.async();
     var server = selenium(spawnOptions, seleniumArgs);
     var count = 0;
 
-    var expectationObject= {};
+
+    var client =  webdriverjs.remote(driverOptions);
+
+    function callGenerateReport(expectationObject){
+      expectationObject = JSON.stringify(expectationObject);
+      grunt.file.write('tasks/expected.json',expectationObject);
+      reporterContent = reporterContent.replace(expectationObjectRegex,'expectation = ' + expectationObject + ';');
+      grunt.file.write('tasks/lib/reporter_combined.js',reporterContent);
+      var reporter_combined = require('./lib/reporter_combined.js');
+      client
+       .url('http://localhost:8000/app')
+       .execute(reporter_combined.generateReport)
+       .saveScreenshot('test.png',function(err, png){
+            if(err){
+                console.log('Screenshot coult not be saved.');
+            }
+        });
+    }
 
     server.stdout.on('data', function(output) {
         var val = output.toString();
@@ -74,31 +91,18 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
             count++;
             if(count>1){
 
-               var client =  webdriverjs.remote(driverOptions);
+               
                client.init();
 
                var expectationObjectPromise = client
                .url('http://localhost:8000/app')
-               .execute(expect_combined.generateExpectation, [expectationObject], function(err, response){
-                console.log(err);
-                console.log(response);
-                console.log(expectationObject);
+               .execute(expect_combined.generateExpectation, function(err, response){
+                  callGenerateReport(response.value);          
+                  done();
                });
-               
-
-               
-
-               //  client
-               // .url('http://localhost:8000/app')
-               // .execute(reporter_combined.generateReport(expectationObject))
-               // .saveScreenshot('test.png',function(err, png){
-               //      if(err){
-               //          console.log('Screenshot coult not be saved.');
-               //      }
-               //  });
-               //.end();
+               // .end();
                console.log('came till done');
-               done();  
+                 
             }
             
       }
