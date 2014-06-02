@@ -95,5 +95,3 @@ var visibility = (function(){
     };
 
   })();
-
-  module.exports = visibility;

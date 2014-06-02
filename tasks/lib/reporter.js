@@ -1,7 +1,5 @@
 var reporter = (function(){
 	var jQuery;
-	var _ = require('underscore');
-	var util = require('./util');
 	var setJQuery = function(jQuery){
 		jQuery = jQuery;
 	};
@@ -97,5 +95,3 @@ var reporter = (function(){
 	};
 
 })();
-
-module.exports = reporter;

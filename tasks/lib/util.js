@@ -1,7 +1,5 @@
 var util = (function(){
 
-	var _ = require('underscore');
-
 	var trial = function(callback){
 		callback();
 	};
@@ -168,5 +166,3 @@ var getNodeData = function(element){
 	};
 
 })();
-
-module.exports = util;
