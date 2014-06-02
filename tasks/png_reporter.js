@@ -42,20 +42,25 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
     var visibilityRegex = new RegExp('{{VISIBILITY}}');
     var underscoreRegex = new RegExp('{{UNDERSCORE}}');
 
+    //Common 
+    var underscoreContent = grunt.file.read('node_modules/underscore/underscore-min.js');
     var utilContent = grunt.file.read('tasks/lib/util.js');
-    var reporterContent = grunt.file.read('tasks/lib/reporter.js');
+    
+    //Expectation
     var visibilityContent = grunt.file.read('tasks/lib/visibility.js');
     var mainContent = grunt.file.read('tasks/lib/main.js');
-    var underscoreContent = grunt.file.read('node_modules/underscore/underscore-min.js');
-
     mainContent = mainContent.replace(utilRegex,utilContent);
-    mainContent = mainContent.replace(reporterRegex,reporterContent);
     mainContent = mainContent.replace(visibilityRegex,visibilityContent);
     mainContent = mainContent.replace(underscoreRegex,underscoreContent);
-
     grunt.file.write('tasks/lib/main_combined.js',mainContent);
-    var combined = require('./lib/main_combined.js');
-    console.log('task running');
+    var expect_combined = require('./lib/main_combined.js');
+
+    //Reporter
+    var reporterContent = grunt.file.read('tasks/lib/reporter.js');
+    reporterContent = reporterContent.replace(utilRegex,utilContent);
+    grunt.file.write('tasks/lib/reporter_combined.js',reporterContent);
+    var reporter_combined = require('./lib/reporter_combined.js');
+    
     var done = this.async();
     var server = selenium(spawnOptions, seleniumArgs);
     var count = 0;
@@ -63,17 +68,19 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
       console.log('coming inside stdout');
         var val = output.toString();
         if(val.indexOf('jetty.jetty.Server')>-1){
-            console.log(main.customScript);
             count++;
             if(count>1){
                 webdriverjs
                .remote(driverOptions)
                .init()
                .url('http://localhost:8000/app')
-               .title(function(err, res) {
-                  console.log('Title was: ' + res.value);
-               })
-               .execute(combined.customScript)
+               .execute(combined.generateExpectation);
+
+                webdriverjs
+               .remote(driverOptions)
+               .init()
+               .url('http://localhost:8000/app')
+               .execute(reporter_combined.generateReport));
                .saveScreenshot('test.png',function(err, png){
                     if(err){
                         console.log('Screenshot coult not be saved.');

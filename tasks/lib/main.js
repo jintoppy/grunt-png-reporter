@@ -1,6 +1,6 @@
 var main = (function(){
 
-	function customScript(){
+	function generateExpectation(){
 	var formattedJson = [];
 	//var REPORTER = require('./reporter');
 	//var util = require('./util');
@@ -12,8 +12,6 @@ var main = (function(){
 
 	{{VISIBILITY}}
 
-	{{REPORTER}}
-	
 
 	function traverseDOM(element) {
 		var nodeData, parentNode, elementNodeData;
@@ -67,22 +65,19 @@ var main = (function(){
 
 	  	 
 		return util.loadJQuery(null,function(jQuery){
-			// 	console.log('came inside this');
-			// window.onerror = function(e){
-			// 	console.log('error occurred' + e);
-			// };
-			//document.getElementById('gbqfq').value = "CUSTOM SCRIPT";
 				traverseDOM(window.document.body);
 				window.formattedJson = formattedJson;
 				createExpectationObject(formattedJson[0]);
-				//REPORTER.setJQuery(jQuery);
 				REPORTER.generateReport(expectJsonObj);
-			});
-	  	}
+		});
+	  }
 
 	  return {
-		customScript: customScript
+		generateExpectation: generateExpectation
 	  };
+
+
+
 
 })();
 module.exports = main;
