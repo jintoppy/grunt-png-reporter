@@ -46,7 +46,7 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
     var reporterContent = grunt.file.read('tasks/lib/reporter.js');
     var visibilityContent = grunt.file.read('tasks/lib/visibility.js');
     var mainContent = grunt.file.read('tasks/lib/main.js');
-    var underscoreContent = grunt.file.read('node_modules/underscore/underscore.js');
+    var underscoreContent = grunt.file.read('node_modules/underscore/underscore-min.js');
 
     mainContent = mainContent.replace(utilRegex,utilContent);
     mainContent = mainContent.replace(reporterRegex,reporterContent);
@@ -69,7 +69,7 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
                 webdriverjs
                .remote(driverOptions)
                .init()
-               .url('https://www.google.co.in/')
+               .url('http://localhost:8000/app')
                .title(function(err, res) {
                   console.log('Title was: ' + res.value);
                })

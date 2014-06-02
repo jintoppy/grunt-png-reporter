@@ -1,4 +1,4 @@
-var visibility = (function(){
+var VISIBILITY = (function(){
     /**
      * Checks if a DOM element is visible. Takes into
      * consideration its parents and overflow.

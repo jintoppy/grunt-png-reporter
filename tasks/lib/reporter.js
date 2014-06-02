@@ -1,8 +1,8 @@
-var reporter = (function(){
-	var jQuery;
-	var setJQuery = function(jQuery){
-		jQuery = jQuery;
-	};
+var REPORTER = (function(){
+	//var jQuery;
+	// var setJQuery = function(jQuery){
+	// 	jQuery = jQuery;
+	// };
 
 	var createTopFailureLine = function(fromPos, toPos){
 		var div =  jQuery('<div/>');
@@ -90,8 +90,7 @@ var reporter = (function(){
 	};
 
 	return {
-		generateReport: generateReport,
-		setJQuery: setJQuery
+		generateReport: generateReport
 	};
 
 })();

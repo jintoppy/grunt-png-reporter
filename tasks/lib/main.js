@@ -6,34 +6,41 @@ var main = (function(){
 	//var util = require('./util');
 	//var VISIBILITY = require('./visibility');
 	//files will be inserted here
-	{{util}}
-	{{REPORTER}}
-	{{VISIBILITY}}
 	{{UNDERSCORE}}
+
+	{{util}}
+
+	{{VISIBILITY}}
+
+	{{REPORTER}}
+	
+
 	function traverseDOM(element) {
 		var nodeData, parentNode, elementNodeData;
 		
-		console.log('came inside traverseDOM');
-		// if(util.isValidElement(element)){
-		// 	elementNodeData = window.util.getNodeData(element);
-		// 	if (element.tagName === "BODY") {
-		// 		formattedJson.push(elementNodeData);
-		// 	}
-		// 	var parentData = window.util.findDeep(formattedJson, elementNodeData);
-		// 	if(VISIBILITY.isVisible(element) && element.hasChildNodes() && parentData){
-		// 		for (var i = 0; i < element.childNodes.length; i++) {
-		// 			var node = element.childNodes[i];
-		// 			if (util.isValidElement(node)) {
-		// 				nodeData = window.util.getNodeData(node);
-		// 				if (!parentData.childNodes) {
-		// 					parentData.childNodes = [];
-		// 				}
-		// 				parentData.childNodes.push(nodeData);
-		// 				traverseDOM(node);
-		// 			}
-		// 		}
-		// 	}
-		// }
+		
+		if(util.isValidElement(element)){
+			elementNodeData = util.getNodeData(element);
+			if (element.tagName === "BODY") {
+				formattedJson.push(elementNodeData);
+			}
+			var parentData = util.findDeep(formattedJson, elementNodeData);
+
+			if(VISIBILITY.isVisible(element) && element.hasChildNodes() && parentData){					
+				for (var i = 0; i < element.childNodes.length; i++) {
+					var node = element.childNodes[i];
+					if (util.isValidElement(node)) {
+						nodeData = util.getNodeData(node);
+						if (!parentData.childNodes) {
+							parentData.childNodes = [];
+						}						
+						parentData.childNodes.push(nodeData);
+						traverseDOM(node);
+
+					}
+				}
+			}
+		}
 	}
 
 	var expectJsonObj=[];
@@ -61,13 +68,14 @@ var main = (function(){
 	  	 
 		return util.loadJQuery(null,function(jQuery){
 			// 	console.log('came inside this');
-			document.getElementById('gbqfq').value = "CUSTOM SCRIPT";
-			traverseDOM(window.document.body);
-			window.formattedJson = formattedJson;
-			createExpectationObject(formattedJson[0]);
-			console.log(formattedJson);
-			console.log(expectJsonObj);
-				REPORTER.setJQuery(jQuery);
+			// window.onerror = function(e){
+			// 	console.log('error occurred' + e);
+			// };
+			//document.getElementById('gbqfq').value = "CUSTOM SCRIPT";
+				traverseDOM(window.document.body);
+				window.formattedJson = formattedJson;
+				createExpectationObject(formattedJson[0]);
+				//REPORTER.setJQuery(jQuery);
 				REPORTER.generateReport(expectJsonObj);
 			});
 	  	}

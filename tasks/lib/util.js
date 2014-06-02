@@ -5,35 +5,33 @@ var util = (function(){
 	};
 
 	var loadJQuery = function(url, callback){
-		console.log('came till here');
-		callback();
-		// if(window.jQuery){
-		// 	callback(window.jQuery);
-		// }
-		// else{
-		// 	if(!url){
-		// 		url = "https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js";
-		// 	}
+		if(window.jQuery){
+			callback(window.jQuery);
+		}
+		else{
+			if(!url){
+				url = "https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js";
+			}
 
-		// 	var script = document.createElement("script");
-		// 	script.type = "text/javascript";
+			var script = document.createElement("script");
+			script.type = "text/javascript";
 
-		// 	if (script.readyState) { //IE
-		// 	script.onreadystatechange = function () {
-		// 		if (script.readyState == "loaded" || script.readyState == "complete") {
-		// 			script.onreadystatechange = null;
-		// 			callback(window.jQuery);
-		// 		}
-		// 	};
-		// 	} else { //Others
-		// 		script.onload = function () {
-		// 			callback(window.jQuery);
-		// 		};
-		// 	}
+			if (script.readyState) { //IE
+			script.onreadystatechange = function () {
+				if (script.readyState == "loaded" || script.readyState == "complete") {
+					script.onreadystatechange = null;
+					callback(window.jQuery);
+				}
+			};
+			} else { //Others
+				script.onload = function () {
+					callback(window.jQuery);
+				};
+			}
 
-		// 	script.src = url;
-		// 	document.getElementsByTagName("head")[0].appendChild(script);
-		// }
+			script.src = url;
+			document.getElementsByTagName("head")[0].appendChild(script);
+		}
 		
 
 	};
@@ -94,6 +92,7 @@ var getPosition = function(element) {
         yPosition += (element.offsetTop - element.scrollTop + element.clientTop);
         element = element.offsetParent;
     }
+
     return {
         x: xPosition,
         y: yPosition
@@ -101,7 +100,7 @@ var getPosition = function(element) {
 };
 
 var isValidElement = function(element){
-	return (!_.contains(["SCRIPT", "STYLE", "NOSCRIPT"], element.tagName)) && element.nodeType === 1;
+	return (element.tagName && !_.contains(["SCRIPT", "STYLE", "NOSCRIPT"], element.tagName)) && element.nodeType === 1;
 };
 
 var getSelector = function(element){
@@ -112,10 +111,11 @@ var getSelector = function(element){
 		return '#' + element.id;
 	}
 	else if(element.className){
-		return '.' + element.className.join('.');
+		return '.' + element.className.split(' ').join('.');
 	}
 
 	var elIndex = 1;
+
 	var siblingElements = element.parentNode.getElementsByTagName(element.tagName.toLowerCase());
 		
 	for(var k=0;k<siblingElements.length;k++){
@@ -124,6 +124,7 @@ var getSelector = function(element){
 		}
 		elIndex++;
 	}
+	
 
 	var selectorStr = siblingElements.length ==1? element.tagName.toLowerCase():
 						element.tagName.toLowerCase() + ':nth-child(' +elIndex + ')';
@@ -143,8 +144,9 @@ var getSelector = function(element){
 };
 
 var getNodeData = function(element){
-	var pos = this.getPosition(element);
-	var selector = this.getSelector(element);
+	var pos = getPosition(element);
+	var selector = getSelector(element);
+	
 	return {
 		selector: selector,
 		tagName: element.tagName,
