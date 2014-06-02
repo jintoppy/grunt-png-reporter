@@ -1,9 +1,7 @@
-var main = (function(){
+var REPORTER = (function(){
 
-	function generateExpectation(expectationObjectParam){
-	var formattedJson = [];
+	function generateReport(expectation){
 
-	//files will be inserted here
 	//     Underscore.js 1.6.0
 //     http://underscorejs.org
 //     (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -182,178 +180,96 @@ var getNodeData = function(element){
 
 })();
 
-	var VISIBILITY = (function(){
-    /**
-     * Checks if a DOM element is visible. Takes into
-     * consideration its parents and overflow.
-     *
-     * @param (el)      the DOM element to check if is visible
-     *
-     * These params are optional that are sent in recursively,
-     * you typically won't use these:
-     *
-     * @param (t)       Top corner position number
-     * @param (r)       Right corner position number
-     * @param (b)       Bottom corner position number
-     * @param (l)       Left corner position number
-     * @param (w)       Element width number
-     * @param (h)       Element height number
-     */
-    function _isVisible(el, t, r, b, l, w, h) {
-      var p = el.parentNode,
-          VISIBLE_PADDING = 2;
-
-      //-- Return true for document node
-      if ( 9 === p.nodeType ) {
-        return true;
-      }
-
-      //-- Return false if our element is invisible
-      if (
-         '0' === _getStyle(el, 'opacity') ||
-         'none' === _getStyle(el, 'display') ||
-         'hidden' === _getStyle(el, 'visibility')
-      ) {
-        return false;
-      }
-      
-      if (
-        'undefined' === typeof(t) ||
-        'undefined' === typeof(r) ||
-        'undefined' === typeof(b) ||
-        'undefined' === typeof(l) ||
-        'undefined' === typeof(w) ||
-        'undefined' === typeof(h)
-      ) {
-        t = el.offsetTop;
-        l = el.offsetLeft;
-        b = t + el.offsetHeight;
-        r = l + el.offsetWidth;
-        w = el.offsetWidth;
-        h = el.offsetHeight;
-      }
-      //-- If we have a parent, let's continue:
-      if ( p ) {
-        //-- Check if the parent can hide its children.
-        if ( ('hidden' === _getStyle(p, 'overflow') || 'scroll' === _getStyle(p, 'overflow')) ) {
-          //-- Only check if the offset is different for the parent
-          if (
-            //-- If the target element is to the right of the parent elm
-            l + VISIBLE_PADDING > p.offsetWidth + p.scrollLeft ||
-            //-- If the target element is to the left of the parent elm
-            l + w - VISIBLE_PADDING < p.scrollLeft ||
-            //-- If the target element is under the parent elm
-            t + VISIBLE_PADDING > p.offsetHeight + p.scrollTop ||
-            //-- If the target element is above the parent elm
-            t + h - VISIBLE_PADDING < p.scrollTop
-          ) {
-            //-- Our target element is out of bounds:
-            return false;
-          }
-        }
-        //-- Add the offset parent's left/top coords to our element's offset:
-        if ( el.offsetParent === p ) {
-          l += p.offsetLeft;
-          t += p.offsetTop;
-        }
-        //-- Let's recursively check upwards:
-        return _isVisible(p, t, r, b, l, w, h);
-      }
-      return true;
-    }
-
-    //-- Cross browser method to get style properties:
-    function _getStyle(el, property) {
-      if ( window.getComputedStyle ) {
-        return document.defaultView.getComputedStyle(el,null)[property];
-      }
-      if ( el.currentStyle ) {
-        return el.currentStyle[property];
-      }
-    }
 
 
-    return {
-      'getStyle' : _getStyle,
-      'isVisible' : _isVisible
-    };
+	var createTopFailureLine = function(fromPos, toPos){
+		var div =  jQuery('<div/>');
+		var height = Math.abs(fromPos.y - toPos.y);
 
-  })();
+		div.css({
+			"top": toPos.y,
+			"left": toPos.x+2,
+			"width": "3px",
+			"background-color": "red",
+			"position": "absolute",
+			"height": height
+		});
+		jQuery('body').append(div);
 
+	};
 
-	function traverseDOM(element) {
-		var nodeData, parentNode, elementNodeData;
+	var createLeftFailureLine = function(fromPos, toPos){
+
+		var div =  jQuery('<div/>');
+		var width = Math.abs(fromPos.x - toPos.x);
+
+		div.css({
+			"top": toPos.y+2,
+			"left": fromPos.x,
+			"width": width,
+			"height": "3px",
+			"position": "absolute",
+			"background-color": "red"
+		});
+		jQuery('body').append(div);
+	};
+
+	var createSuccessMsg = function(){
+		var div = jQuery('<div/>');
+		div.html('Success!');
+		div.css({
+			"top": window.innerHeight/2,
+			"left": window.innerWidth/2,
+			"position": "absolute",
+			"color": "green",
+			"font-weight": "bold",
+			"font-size": "20px"
+		});
+		jQuery('body').append(div);
+
+	};
 		
-		
-		if(util.isValidElement(element)){
-			elementNodeData = util.getNodeData(element);
-			if (element.tagName === "BODY") {
-				formattedJson.push(elementNodeData);
-			}
-			var parentData = util.findDeep(formattedJson, elementNodeData);
 
-			if(VISIBILITY.isVisible(element) && element.hasChildNodes() && parentData){					
-				for (var i = 0; i < element.childNodes.length; i++) {
-					var node = element.childNodes[i];
-					if (util.isValidElement(node)) {
-						nodeData = util.getNodeData(node);
-						if (!parentData.childNodes) {
-							parentData.childNodes = [];
-						}						
-						parentData.childNodes.push(nodeData);
-						traverseDOM(node);
+		return util.loadJQuery(null,function(jQuery){
+			var totalFailures = 0;
+			for(var i=0;i<expectation.length;i++){
+				var currObj = expectation[i];
+				var currNode = jQuery(currObj.selector);
+				if(currNode.length>0){
+					var currObjPos = util.getPosition(currNode[0]);
+					_.each(currObj.top, function(value,key){
+						var nodeToBeComparedForTop = jQuery(key);
+						if(nodeToBeComparedForTop.length>0){
+							var posToBeCompared = util.getPosition(nodeToBeComparedForTop[0]);
+							if(Math.abs(currObjPos.y-posToBeCompared.y) !== value){
+								totalFailures++;
+								createTopFailureLine(currObjPos, posToBeCompared);
+							}
+						}
+					});
 
+					_.each(currObj.left, function(value,key){
+						var nodeToBeComparedForLeft = jQuery(key);
+						if(nodeToBeComparedForLeft.length>0){
+							var posToBeCompared = util.getPosition(nodeToBeComparedForLeft[0]);
+							if(Math.abs(currObjPos.x-posToBeCompared.x) !== value){
+								totalFailures++;
+								createLeftFailureLine(currObjPos, posToBeCompared);
+							}
+						}
+					});
+
+					if(totalFailures === 0){
+						createSuccessMsg();
 					}
 				}
+
 			}
-		}
-	}
-
-	var expectJsonObj=[];
-	function createExpectationObject(jsonObj){
-		var obj, currentObj;
-		if(jsonObj && jsonObj.childNodes && jsonObj.childNodes.length>0){
-				obj={};
-				obj["selector"] = jsonObj.selector;
-				obj.top={};
-				obj.left={};
-				expectJsonObj.push(obj);
-			for(var i=0;i<jsonObj.childNodes.length;i++){
-				currentObj = jsonObj.childNodes[i];
-				obj.top[currentObj.selector] = Math.abs(currentObj.y-jsonObj.y);
-				obj.left[currentObj.selector] = Math.abs(currentObj.x-jsonObj.x);
-				createExpectationObject(currentObj);
-			}
-			
-		}
-
-	}
-
-	  
-		var executingCompleted = false;
-	  	 
-		util.loadJQuery(null,function(jQuery){
-				traverseDOM(window.document.body);
-				window.formattedJson = formattedJson;
-				createExpectationObject(formattedJson[0]);
-				executingCompleted = true;
-				//console.log(expectationObjectParam);
-				//return expectationObjectParam;
 		});
+	}
 
-		do{
-			console.log('waiting');
-		}while(!executingCompleted);
-
-		return expectJsonObj;
-	  }
-
-	  return {
-		generateExpectation: generateExpectation
-	  };
-
-
-
+	return {
+		generateReport: generateReport
+	};
 
 })();
-module.exports = main;

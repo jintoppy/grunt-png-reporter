@@ -1,10 +1,8 @@
 var main = (function(){
 
-	function generateExpectation(){
+	function generateExpectation(expectationObjectParam){
 	var formattedJson = [];
-	//var REPORTER = require('./reporter');
-	//var util = require('./util');
-	//var VISIBILITY = require('./visibility');
+
 	//files will be inserted here
 	{{UNDERSCORE}}
 
@@ -62,14 +60,22 @@ var main = (function(){
 	}
 
 	  
-
+		var executingCompleted = false;
 	  	 
-		return util.loadJQuery(null,function(jQuery){
+		util.loadJQuery(null,function(jQuery){
 				traverseDOM(window.document.body);
 				window.formattedJson = formattedJson;
 				createExpectationObject(formattedJson[0]);
-				REPORTER.generateReport(expectJsonObj);
+				executingCompleted = true;
+				//console.log(expectationObjectParam);
+				//return expectationObjectParam;
 		});
+
+		do{
+			console.log('waiting');
+		}while(!executingCompleted);
+		
+		return expectJsonObj;
 	  }
 
 	  return {

@@ -2,3 +2,4 @@ node_modules
 npm-debug.log
 tmp
 tasks/lib/main_combined.js
+tasks/lib/reporter_combined.js

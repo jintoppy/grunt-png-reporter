@@ -1,6 +1,6 @@
 var REPORTER = (function(){
 
-	var generateReport = function(expectation){
+	function generateReport(expectation){
 
 	{{UNDERSCORE}}
 
@@ -91,7 +91,7 @@ var REPORTER = (function(){
 				}
 
 			}
-		}
+		});
 	}
 
 	return {

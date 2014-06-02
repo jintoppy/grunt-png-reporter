@@ -58,34 +58,44 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
     //Reporter
     var reporterContent = grunt.file.read('tasks/lib/reporter.js');
     reporterContent = reporterContent.replace(utilRegex,utilContent);
+    reporterContent = reporterContent.replace(underscoreRegex,underscoreContent);
     grunt.file.write('tasks/lib/reporter_combined.js',reporterContent);
     var reporter_combined = require('./lib/reporter_combined.js');
     
     var done = this.async();
     var server = selenium(spawnOptions, seleniumArgs);
     var count = 0;
+
+    var expectationObject= {};
+
     server.stdout.on('data', function(output) {
-      console.log('coming inside stdout');
         var val = output.toString();
         if(val.indexOf('jetty.jetty.Server')>-1){
             count++;
             if(count>1){
-                webdriverjs
-               .remote(driverOptions)
-               .init()
-               .url('http://localhost:8000/app')
-               .execute(combined.generateExpectation);
 
-                webdriverjs
-               .remote(driverOptions)
-               .init()
+               var client =  webdriverjs.remote(driverOptions);
+               client.init();
+
+               var expectationObjectPromise = client
                .url('http://localhost:8000/app')
-               .execute(reporter_combined.generateReport));
-               .saveScreenshot('test.png',function(err, png){
-                    if(err){
-                        console.log('Screenshot coult not be saved.');
-                    }
-                });
+               .execute(expect_combined.generateExpectation, [expectationObject], function(err, response){
+                console.log(err);
+                console.log(response);
+                console.log(expectationObject);
+               });
+               
+
+               
+
+               //  client
+               // .url('http://localhost:8000/app')
+               // .execute(reporter_combined.generateReport(expectationObject))
+               // .saveScreenshot('test.png',function(err, png){
+               //      if(err){
+               //          console.log('Screenshot coult not be saved.');
+               //      }
+               //  });
                //.end();
                console.log('came till done');
                done();  
