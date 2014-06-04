@@ -37,56 +37,58 @@ grunt.initConfig({
 
 ### Options
 
-#### options.separator
+#### options.expectUrl
 Type: `String`
-Default value: `',  '`
+Example value: `'http://localhost:8000/app'`
 
-A string value that is used to do something with whatever.
+A url to compare with.
 
-#### options.punctuation
+#### options.expectactionFile
 Type: `String`
-Default value: `'.'`
+Example value: `'test/fixtures/expected.json'`
 
-A string value that is used to do something else with whatever else.
+An expectation object to compare with
+
+NOTE: if expectactionFile value is empty, expectUrl is taken instead, and will generate an expectaion file 
+
+#### options.assertUrl
+Type: `String`
+Example value: `'http://localhost:8000/app'`
+
+The url to check. This is a mandatory option
 
 ### Usage Examples
 
-#### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
-
-```js
-grunt.initConfig({
-  png_reporter: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-})
-```
-
-#### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
+#### Options with Expectation File
+In this example, we are giving an expectation file to compare with.
 
 ```js
 grunt.initConfig({
   png_reporter: {
     options: {
-      separator: ': ',
-      punctuation: ' !!!',
-    },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
+      assertUrl: 'http://localhost:8000/app',
+      expectationFile: 'test/fixtures/expected.json'
+    }
   },
 })
 ```
 
-## Contributing
-In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
+#### Options with Expectation File
+In this example, we are giving a url to compare with
+
+```js
+grunt.initConfig({
+  png_reporter: {
+    options: {
+      expectUrl: 'http://theapplication.com',
+      assertUrl: 'http://localhost:8000/app'
+    }
+  },
+})
+```
 
 ## Release History
-_(Nothing yet)_
+
 
 ## License
 Copyright (c) 2014 Jinto Jose. Licensed under the MIT license.

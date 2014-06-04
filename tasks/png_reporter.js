@@ -34,7 +34,7 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
     
     var options = this.options();
 
-    if((!options.expectUrl && !options.expectactionFile) || !options.assertUrl ){
+    if((!options.expectUrl && !options.expectationFile) || !options.assertUrl ){
       grunt.log.error(['expected parameters missing']);
       return;
     }
@@ -51,7 +51,7 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
     
     //Expectation
     var visibilityContent, mainContent, expect_combined;
-    if(!options.expectactionFile){
+    if(!options.expectationFile){
       visibilityContent = grunt.file.read('tasks/lib/visibility.js');
       mainContent = grunt.file.read('tasks/lib/main.js');
       mainContent = mainContent.replace(utilRegex,utilContent);
@@ -117,7 +117,7 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
                  }); 
                }
                else{
-                  expectParameterContent = grunt.file.read(options.expectactionFile);
+                  expectParameterContent = grunt.file.read(options.expectationFile);
                   callGenerateReport(expectParameterContent,options);
                   done();
                }

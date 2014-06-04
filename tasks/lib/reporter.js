@@ -9,7 +9,7 @@ var REPORTER = (function(){
 	{{util}}
 
 		
-	{{EXPECTATION_OBJECT}} // jshint ignore:line
+	{{EXPECTATION_OBJECT}}
 
 
 	var createTopFailureLine = function(fromPos, toPos){

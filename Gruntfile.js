@@ -37,10 +37,7 @@ module.exports = function (grunt) {
         options: {
           expectUrl: 'http://localhost:8000/app',
           assertUrl: 'http://localhost:8000/app',
-          expectactionFile: 'test/fixtures/expected.json'
-        },
-        files: {
-          'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123']
+          expectationFile: 'test/fixtures/expected.json'
         }
       },
       custom_options: {
@@ -48,9 +45,6 @@ module.exports = function (grunt) {
           expectUrl: 'http://localhost:8000/app',
           assertUrl: 'http://localhost:8000/app',
           expectactionFile: 'test/fixtures/expected.json'
-        },
-        files: {
-          'tmp/custom_options': ['test/fixtures/testing', 'test/fixtures/123']
         }
       }
     },
