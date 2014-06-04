@@ -35,6 +35,9 @@ module.exports = function (grunt) {
     png_reporter: {
       default_options: {
         options: {
+          expectUrl: 'http://localhost:8000/app',
+          assertUrl: 'http://localhost:8000/app',
+          expectactionFile: 'test/fixtures/expected.json'
         },
         files: {
           'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123']
@@ -42,8 +45,9 @@ module.exports = function (grunt) {
       },
       custom_options: {
         options: {
-          separator: ': ',
-          punctuation: ' !!!'
+          expectUrl: 'http://localhost:8000/app',
+          assertUrl: 'http://localhost:8000/app',
+          expectactionFile: 'test/fixtures/expected.json'
         },
         files: {
           'tmp/custom_options': ['test/fixtures/testing', 'test/fixtures/123']

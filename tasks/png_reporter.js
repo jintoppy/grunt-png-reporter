@@ -32,10 +32,12 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
 
     // Merge task-specific and/or target-specific options with these defaults.
     
-    var options = this.options({
-      punctuation: '.',
-      separator: ', '
-    });
+    var options = this.options();
+
+    if((!options.expectUrl && !options.expectactionFile) || !options.assertUrl ){
+      grunt.log.error(['expected parameters missing']);
+      return;
+    }
 
     var utilRegex = new RegExp('{{util}}');
     var reporterRegex = new RegExp('{{REPORTER}}');
@@ -48,13 +50,17 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
     var utilContent = grunt.file.read('tasks/lib/util.js');
     
     //Expectation
-    var visibilityContent = grunt.file.read('tasks/lib/visibility.js');
-    var mainContent = grunt.file.read('tasks/lib/main.js');
-    mainContent = mainContent.replace(utilRegex,utilContent);
-    mainContent = mainContent.replace(visibilityRegex,visibilityContent);
-    mainContent = mainContent.replace(underscoreRegex,underscoreContent);
-    grunt.file.write('tasks/lib/main_combined.js',mainContent);
-    var expect_combined = require('./lib/main_combined.js');
+    var visibilityContent, mainContent, expect_combined;
+    if(!options.expectactionFile){
+      visibilityContent = grunt.file.read('tasks/lib/visibility.js');
+      mainContent = grunt.file.read('tasks/lib/main.js');
+      mainContent = mainContent.replace(utilRegex,utilContent);
+      mainContent = mainContent.replace(visibilityRegex,visibilityContent);
+      mainContent = mainContent.replace(underscoreRegex,underscoreContent);
+      grunt.file.write('tasks/lib/main_combined.js',mainContent);
+      expect_combined = require('./lib/main_combined.js');  
+    }
+    
 
     //Reporter
     var reporterContent = grunt.file.read('tasks/lib/reporter.js');
@@ -69,12 +75,18 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
 
     var client =  webdriverjs.remote(driverOptions);
 
-    function callGenerateReport(expectationObject){
-      expectationObject = JSON.stringify(expectationObject);
-      grunt.file.write('tasks/expected.json',expectationObject);
+    function callGenerateReport(expectationObject, options){
+      if(expectationObject.constructor === Array){
+        expectationObject = JSON.stringify(expectationObject);  
+      }
+      
+      if(!options.expectactionFile){
+        grunt.file.write('tasks/expected.json',expectationObject);  
+      }      
       reporterContent = reporterContent.replace(expectationObjectRegex,'expectation = ' + expectationObject + ';');
       grunt.file.write('tasks/lib/reporter_combined.js',reporterContent);
       var reporter_combined = require('./lib/reporter_combined.js');
+
       client
        .url('http://localhost:8000/app')
        .execute(reporter_combined.generateReport)
@@ -86,7 +98,8 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
     }
 
     server.stdout.on('data', function(output) {
-        var val = output.toString();
+        var val, expectParameterContent;
+        val = output.toString();
         if(val.indexOf('jetty.jetty.Server')>-1){
             count++;
             if(count>1){
@@ -94,12 +107,21 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
                
                client.init();
 
-               var expectationObjectPromise = client
-               .url('http://localhost:8000/app')
-               .execute(expect_combined.generateExpectation, function(err, response){
-                  callGenerateReport(response.value);          
+
+               if(!options.expectactionFile){
+                  client
+                 .url('http://localhost:8000/app')
+                 .execute(expect_combined.generateExpectation, function(err, response){
+                    callGenerateReport(response.value,options);
+                    done();
+                 }); 
+               }
+               else{
+                  expectParameterContent = grunt.file.read(options.expectactionFile);
+                  callGenerateReport(expectParameterContent,options);
                   done();
-               });
+               }
+               
                // .end();
                console.log('came till done');
                  

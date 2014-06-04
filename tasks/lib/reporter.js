@@ -2,7 +2,6 @@ var REPORTER = (function(){
 
 	function generateReport(){
 
-	console.log('inside generateReport');
 	var expectation;
 
 	{{UNDERSCORE}}
@@ -58,11 +57,6 @@ var REPORTER = (function(){
 
 	};
 
-	console.log(expectation);
-
-	expectation = JSON.parse(expectation);
-
-	console.log(expectation);
 
 			var totalFailures = 0;
 			for(var i=0;i<expectation.length;i++){
@@ -106,3 +100,4 @@ var REPORTER = (function(){
 	};
 
 })();
+module.exports = REPORTER;
