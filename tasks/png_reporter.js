@@ -75,7 +75,7 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
 
     var client =  webdriverjs.remote(driverOptions);
 
-    function callGenerateReport(expectationObject, options){
+    function callGenerateReport(expectationObject, options, done){
       if(expectationObject.constructor === Array){
         expectationObject = JSON.stringify(expectationObject);  
       }
@@ -94,6 +94,7 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
             if(err){
                 console.log('Screenshot coult not be saved.');
             }
+            done();
         });
     }
 
@@ -108,21 +109,18 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
                client.init();
 
 
-               if(!options.expectactionFile){
+               if(!options.expectationFile){
                   client
                  .url('http://localhost:8000/app')
                  .execute(expect_combined.generateExpectation, function(err, response){
-                    callGenerateReport(response.value,options);
-                    done();
+                    callGenerateReport(response.value,options, done);
                  }); 
                }
                else{
                   expectParameterContent = grunt.file.read(options.expectationFile);
-                  callGenerateReport(expectParameterContent,options);
-                  done();
+                  callGenerateReport(expectParameterContent,options,done);
                }
                
-               // .end();
                console.log('came till done');
                  
             }

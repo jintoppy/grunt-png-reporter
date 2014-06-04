@@ -36,15 +36,7 @@ module.exports = function (grunt) {
       default_options: {
         options: {
           expectUrl: 'http://localhost:8000/app',
-          assertUrl: 'http://localhost:8000/app',
-          expectationFile: 'test/fixtures/expected.json'
-        }
-      },
-      custom_options: {
-        options: {
-          expectUrl: 'http://localhost:8000/app',
-          assertUrl: 'http://localhost:8000/app',
-          expectactionFile: 'test/fixtures/expected.json'
+          assertUrl: 'http://localhost:8000/app'
         }
       }
     },
@@ -61,7 +53,7 @@ module.exports = function (grunt) {
 
   // Whenever the "test" task is run, first clean the "tmp" dir, then run this
   // plugin's task(s), then test the result.
-  grunt.registerTask('test', ['clean', 'png_reporter', 'nodeunit']);
+  grunt.registerTask('test', ['clean', 'png_reporter']);
 
   // By default, lint and run all tests.
   grunt.registerTask('default', ['jshint', 'test']);
