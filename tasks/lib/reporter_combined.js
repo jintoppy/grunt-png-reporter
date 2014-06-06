@@ -183,7 +183,7 @@ var getNodeData = function(element){
 })();
 
 		
-	expectation = [{"selector":"body","left":{".container-fluid":0},"top":{".container-fluid":20}},{"selector":".container-fluid","left":{".row":0},"top":{".row":0}},{"selector":".row","left":{".col-md-10":173,".col-md-2":0},"top":{".col-md-10":0,".col-md-2":0}},{"selector":".col-md-2","left":{".ng-pristine.ng-valid":17},"top":{".ng-pristine.ng-valid":22}},{"selector":".col-md-10","left":{".phones":15},"top":{".phones":0}},{"selector":".phones","left":{".ng-scope.ng-binding":40},"top":{".ng-scope.ng-binding":100}},{"selector":".ng-scope.ng-binding","left":{".ng-binding":0},"top":{".ng-binding":20}},{"selector":".ng-scope.ng-binding","left":{".ng-binding":0},"top":{".ng-binding":20}},{"selector":".ng-scope.ng-binding","left":{".ng-binding":0},"top":{".ng-binding":20}}];
+	expectation = [{"selector":"body","left":{".container-fluid":0},"top":{".container-fluid":20}},{"selector":".container-fluid","left":{".row":0},"top":{".row":0}},{"selector":".row","left":{".col-md-10":173,".col-md-2":0},"top":{".col-md-10":0,".col-md-2":0}},{"selector":".col-md-2","left":{".ng-pristine.ng-valid":17},"top":{".ng-pristine.ng-valid":22}},{"selector":".col-md-10","left":{".phones":15},"top":{".phones":0}},{"selector":".phones","left":{".ng-scope":40},"top":{".ng-scope":100}},{"selector":".ng-scope","left":{".ng-binding":0},"top":{".ng-binding":20}},{"selector":".ng-scope","left":{".ng-binding":0},"top":{".ng-binding":20}},{"selector":".ng-scope","left":{".ng-binding":0},"top":{".ng-binding":20}}];
 
 
 	var createTopFailureLine = function(fromPos, toPos){
@@ -260,11 +260,12 @@ var getNodeData = function(element){
 						}
 					});
 
-					if(totalFailures === 0){
-						createSuccessMsg();
-					}
 				}
 
+			}
+
+			if(totalFailures === 0){
+				createSuccessMsg();
 			}
 
 	}

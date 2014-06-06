@@ -86,11 +86,12 @@ var REPORTER = (function(){
 						}
 					});
 
-					if(totalFailures === 0){
-						createSuccessMsg();
-					}
 				}
 
+			}
+
+			if(totalFailures === 0){
+				createSuccessMsg();
 			}
 
 	}

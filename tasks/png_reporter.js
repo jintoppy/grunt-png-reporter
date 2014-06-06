@@ -88,7 +88,7 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
       var reporter_combined = require('./lib/reporter_combined.js');
 
       client
-       .url('http://localhost:8000/app')
+       .url(options.assertUrl)
        .execute(reporter_combined.generateReport)
        .saveScreenshot('test.png',function(err, png){
             if(err){
@@ -111,7 +111,7 @@ grunt.registerMultiTask('png_reporter', 'Do the element dimension comparison tes
 
                if(!options.expectationFile){
                   client
-                 .url('http://localhost:8000/app')
+                 .url(options.expectUrl)
                  .execute(expect_combined.generateExpectation, function(err, response){
                     callGenerateReport(response.value,options, done);
                  }); 

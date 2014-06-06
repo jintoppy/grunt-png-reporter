@@ -35,6 +35,7 @@ module.exports = function (grunt) {
     png_reporter: {
       default_options: {
         options: {
+          //expectationFile: 'test/fixtures/expected.json',
           expectUrl: 'http://localhost:8000/app',
           assertUrl: 'http://localhost:8000/app'
         }
